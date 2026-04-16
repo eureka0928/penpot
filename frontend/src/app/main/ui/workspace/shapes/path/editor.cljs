@@ -151,10 +151,10 @@
              (dom/stop-propagation event)
              (dom/prevent-default event)
 
-             (when ^boolean is-move
+             (when (or ^boolean is-move ^boolean is-draw)
                (st/emit! (drp/start-move-handler index prefix))))))]
 
-    [:g.handler {:pointer-events (if ^boolean is-draw "none" "visible")}
+    [:g.handler {:pointer-events "visible"}
      [:line
       {:x1 (:x point)
        :y1 (:y point)
@@ -191,7 +191,7 @@
                :on-pointer-down on-pointer-down
                :on-pointer-enter on-enter
                :on-pointer-leave on-leave
-               :class (when ^boolean is-move
+               :class (when (or ^boolean is-move ^boolean is-draw)
                         (cur/get-static "pointer-move"))
                :style {:fill "none"
                        :stroke-width 0}}]]))
@@ -387,7 +387,7 @@
              (boolean position-handlers)]
 
          [:g.path-node {:key (dm/str pos-x "-" pos-y)}
-          [:g.point-handlers {:pointer-events (when (= edit-mode :draw) "none")}
+          [:g.point-handlers
            (for [[hindex prefix] position-handlers]
              (let [handler-position  (path/get-handler-point content hindex prefix)
                    handler-hover?    (contains? hover-handlers [hindex prefix])
